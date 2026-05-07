@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useTrading } from "@/context/TradingContext";
 import Header from "@/components/Header";
 import MarketSelector from "@/components/MarketSelector";
 import MarketStats from "@/components/MarketStats";
@@ -16,6 +17,7 @@ type View = "trade" | "portfolio" | "leaderboard";
 export default function TradingPage() {
   const [selectedMarket, setSelectedMarket] = useState("BTC");
   const [view, setView] = useState<View>("trade");
+  const { positions } = useTrading();
 
   return (
     <div
@@ -43,7 +45,7 @@ export default function TradingPage() {
             <div className="flex flex-1 overflow-hidden">
               {/* Chart — takes most of the space */}
               <div className="flex-1 overflow-hidden">
-                <TradingChart market={selectedMarket} />
+                <TradingChart market={selectedMarket} positions={positions} />
               </div>
 
               {/* Order book */}
