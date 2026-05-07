@@ -1,8 +1,90 @@
 "use client";
 
+"use client";
+
 import { useState, useRef } from "react";
 import { useTrading, DemoPosition } from "@/context/TradingContext";
 import { useMarketData } from "@/hooks/useMarketData";
+
+interface CloseConfirmProps {
+  pos: DemoPosition;
+  markPrice: number;
+  pnl: number;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+function CloseConfirmModal({ pos, markPrice, pnl, onConfirm, onCancel }: CloseConfirmProps) {
+  const isProfit = pnl >= 0;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: "rgba(0,0,0,0.7)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="rounded-xl p-6 flex flex-col gap-4 w-80"
+        style={{ background: "#141414", border: "1px solid #2A2A2A" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex flex-col gap-1">
+          <h3 className="font-semibold text-base" style={{ color: "#F0EBE0" }}>Close Position</h3>
+          <p className="text-xs" style={{ color: "#8C8278" }}>
+            Are you sure you want to close this position?
+          </p>
+        </div>
+
+        {/* Position summary */}
+        <div className="rounded-lg p-3 flex flex-col gap-2 text-xs" style={{ background: "#0A0A0A", border: "1px solid #2A2A2A" }}>
+          <div className="flex justify-between">
+            <span style={{ color: "#8C8278" }}>Market</span>
+            <span className="font-medium" style={{ color: "#F0EBE0" }}>{pos.market}</span>
+          </div>
+          {pos.label && (
+            <div className="flex justify-between">
+              <span style={{ color: "#8C8278" }}>Label</span>
+              <span style={{ color: "#D4A017" }}>{pos.label}</span>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <span style={{ color: "#8C8278" }}>Side</span>
+            <span className="font-semibold" style={{ color: pos.side === "long" ? "#00C853" : "#FF4466" }}>
+              {pos.side.toUpperCase()} {pos.leverage}x
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span style={{ color: "#8C8278" }}>Close Price</span>
+            <span className="font-mono" style={{ color: "#F0EBE0" }}>${markPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+          <div style={{ borderTop: "1px solid #2A2A2A", paddingTop: 4 }} className="flex justify-between">
+            <span style={{ color: "#8C8278" }}>Realized PnL</span>
+            <span className="font-mono font-bold" style={{ color: isProfit ? "#00C853" : "#FF4466" }}>
+              {isProfit ? "+" : ""}${Math.abs(pnl).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2">
+          <button
+            onClick={onCancel}
+            className="flex-1 py-2 rounded text-sm font-medium transition-colors hover:brightness-110"
+            style={{ background: "#1E1E1E", color: "#C8BCA8", border: "1px solid #2A2A2A" }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 py-2 rounded text-sm font-semibold transition-colors hover:brightness-110"
+            style={{ background: isProfit ? "rgba(0,200,83,0.15)" : "rgba(255,68,102,0.15)", color: isProfit ? "#00C853" : "#FF4466", border: `1px solid ${isProfit ? "rgba(0,200,83,0.3)" : "rgba(255,68,102,0.3)"}` }}
+          >
+            Close Position
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type Tab = "positions" | "orders" | "history";
 
@@ -216,6 +298,7 @@ function ToolsRow({ pos, markPrice }: ToolsRowProps) {
 export default function PositionsTable() {
   const [activeTab, setActiveTab] = useState<Tab>("positions");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [pendingClose, setPendingClose] = useState<{ pos: DemoPosition; markPrice: number; pnl: number } | null>(null);
   const { positions, history, closePosition } = useTrading();
   const { markets } = useMarketData();
 
@@ -223,7 +306,16 @@ export default function PositionsTable() {
   markets.forEach((m) => { priceMap[m.name] = parseFloat(m.markPx); });
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#141414", borderTop: "1px solid #2A2A2A" }}>
+    <div className="flex flex-col h-full relative" style={{ background: "#141414", borderTop: "1px solid #2A2A2A" }}>
+      {pendingClose && (
+        <CloseConfirmModal
+          pos={pendingClose.pos}
+          markPrice={pendingClose.markPrice}
+          pnl={pendingClose.pnl}
+          onConfirm={() => { closePosition(pendingClose.pos.id, pendingClose.markPrice); setPendingClose(null); }}
+          onCancel={() => setPendingClose(null)}
+        />
+      )}
       {/* Tabs */}
       <div className="flex items-center shrink-0" style={{ borderBottom: "1px solid #2A2A2A" }}>
         {TABS.map(({ key, label }) => {
@@ -319,7 +411,7 @@ export default function PositionsTable() {
                         </td>
                         <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
                           <button
-                            onClick={() => closePosition(pos.id, markPx)}
+                            onClick={() => setPendingClose({ pos, markPrice: markPx, pnl })}
                             className="px-2 py-0.5 rounded text-[10px] font-semibold"
                             style={{ background: "rgba(255,68,102,0.15)", color: "#FF4466", border: "1px solid rgba(255,68,102,0.3)" }}
                           >
