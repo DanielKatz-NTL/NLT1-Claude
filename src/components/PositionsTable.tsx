@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTrading, DemoPosition } from "@/context/TradingContext";
 import { useMarketData } from "@/hooks/useMarketData";
 
@@ -47,6 +47,51 @@ function closeReasonColor(reason: string) {
   if (reason === "liquidation") return "#FF4466";
   if (reason === "stop_loss" || reason === "trailing_stop") return "#FF8C42";
   return "#8C8278";
+}
+
+function InlineLabel({ pos }: { pos: DemoPosition }) {
+  const { updatePosition } = useTrading();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(pos.label ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function startEdit() {
+    setDraft(pos.label ?? "");
+    setEditing(true);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
+  function commit() {
+    updatePosition(pos.id, { label: draft.trim() || undefined });
+    setEditing(false);
+  }
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="font-medium text-xs" style={{ color: "#F0EBE0" }}>{pos.market}</span>
+      {editing ? (
+        <input
+          ref={inputRef}
+          type="text"
+          maxLength={32}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") setEditing(false); }}
+          className="px-1 py-0.5 rounded text-[10px] outline-none w-28"
+          style={{ background: "#1E1E1E", border: "1px solid #D4A017", color: "#F0EBE0" }}
+        />
+      ) : (
+        <button
+          onClick={startEdit}
+          className="text-left text-[10px] truncate max-w-[120px] transition-opacity hover:opacity-80"
+          style={{ color: pos.label ? "#D4A017" : "#4A4540" }}
+        >
+          {pos.label ?? "+ add label"}
+        </button>
+      )}
+    </div>
+  );
 }
 
 interface ToolsRowProps {
@@ -214,7 +259,7 @@ export default function PositionsTable() {
             <table className="w-full text-xs">
               <thead>
                 <tr style={{ borderBottom: "1px solid #2A2A2A" }}>
-                  {["Market","Side","Size","Entry","Mark","Liq.","PnL","SL / TP","Actions"].map((h) => (
+                  {["Market / Label","Side","Size","Entry","Mark","Liq.","PnL","SL / TP","Actions"].map((h) => (
                     <th key={h} className="px-3 py-2 text-left font-medium whitespace-nowrap" style={{ color: "#8C8278" }}>{h}</th>
                   ))}
                 </tr>
@@ -244,7 +289,9 @@ export default function PositionsTable() {
                         onMouseEnter={(e) => { if (!isExpanded) (e.currentTarget as HTMLElement).style.background = "#181818"; }}
                         onMouseLeave={(e) => { if (!isExpanded) (e.currentTarget as HTMLElement).style.background = ""; }}
                       >
-                        <td className="px-3 py-2 font-medium" style={{ color: "#F0EBE0" }}>{pos.market}</td>
+                        <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                          <InlineLabel pos={pos} />
+                        </td>
                         <td className="px-3 py-2 font-semibold" style={{ color: pos.side === "long" ? "#00C853" : "#FF4466" }}>
                           {pos.side.toUpperCase()} {pos.leverage}x
                         </td>
@@ -299,7 +346,7 @@ export default function PositionsTable() {
             <table className="w-full text-xs">
               <thead>
                 <tr style={{ borderBottom: "1px solid #2A2A2A" }}>
-                  {["Time","Market","Side","Type","Size","Entry","Close","Reason","Fee","PnL"].map((h) => (
+                  {["Time","Market","Label","Side","Type","Size","Entry","Close","Reason","Fee","PnL"].map((h) => (
                     <th key={h} className="px-3 py-2 text-left font-medium whitespace-nowrap" style={{ color: "#8C8278" }}>{h}</th>
                   ))}
                 </tr>
@@ -309,6 +356,7 @@ export default function PositionsTable() {
                   <tr key={t.id + t.closedAt.getTime()} style={{ borderBottom: "1px solid #1E1E1E" }}>
                     <td className="px-3 py-2 font-mono" style={{ color: "#8C8278" }}>{t.closedAt.toLocaleTimeString()}</td>
                     <td className="px-3 py-2 font-medium" style={{ color: "#F0EBE0" }}>{t.market}</td>
+                    <td className="px-3 py-2 text-[10px] max-w-[100px] truncate" style={{ color: t.label ? "#D4A017" : "#4A4540" }}>{t.label ?? "—"}</td>
                     <td className="px-3 py-2 font-semibold" style={{ color: t.side === "long" ? "#00C853" : "#FF4466" }}>{t.side.toUpperCase()}</td>
                     <td className="px-3 py-2" style={{ color: "#C8BCA8" }}>{t.orderType}</td>
                     <td className="px-3 py-2 font-mono" style={{ color: "#C8BCA8" }}>{fmt(t.size, 4)}</td>

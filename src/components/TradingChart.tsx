@@ -178,13 +178,18 @@ export default function TradingChart({ market, positions = [] }: Props) {
       const lines: unknown[] = [];
 
       // Entry line
+      const entryTitle = [
+        isLong ? "▲ LONG" : "▼ SHORT",
+        `${pos.leverage}x`,
+        pos.label ? `· ${pos.label}` : "",
+      ].filter(Boolean).join(" ");
       lines.push(series.createPriceLine({
         price: pos.entryPrice,
         color: entryColor,
         lineWidth: 1,
         lineStyle: LS.dashed,
         axisLabelVisible: true,
-        title: `${isLong ? "▲ LONG" : "▼ SHORT"} ${pos.leverage}x`,
+        title: entryTitle,
       }));
 
       // Liquidation line

@@ -21,6 +21,7 @@ export default function TradePanel({ market }: Props) {
   const [price, setPrice] = useState("");
   const [size, setSize] = useState("");
   const [leverage, setLeverage] = useState(10);
+  const [label, setLabel] = useState("");
   const [flash, setFlash] = useState<"success" | "error" | null>(null);
 
   const markPrice = marketData?.markPx ?? "0";
@@ -78,12 +79,14 @@ export default function TradePanel({ market }: Props) {
       margin: marginRaw,
       fee: feeRaw,
       orderType,
+      label: label.trim() || undefined,
     });
 
     setFlash("success");
     setTimeout(() => setFlash(null), 2000);
     setSize("");
     setPrice("");
+    setLabel("");
   }
 
   return (
@@ -234,6 +237,22 @@ export default function TradePanel({ market }: Props) {
             <span>{Math.round((marketData?.maxLeverage ?? 50) / 2)}x</span>
             <span>{marketData?.maxLeverage ?? 50}x</span>
           </div>
+        </div>
+
+        {/* Position label */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
+            Position Label <span style={{ color: "#4A4540" }}>(optional)</span>
+          </label>
+          <input
+            type="text"
+            maxLength={32}
+            placeholder="e.g. BTC breakout play"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            className="w-full px-2 py-1.5 rounded text-xs outline-none"
+            style={{ background: "#0A0A0A", border: "1px solid #2A2A2A", color: "#F0EBE0" }}
+          />
         </div>
 
         {/* Order summary */}

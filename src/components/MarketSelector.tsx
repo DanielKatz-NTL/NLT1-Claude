@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMarketData } from "@/hooks/useMarketData";
+import { useTrading } from "@/context/TradingContext";
 import { MarketInfo } from "@/lib/hyperliquid";
 
 interface Props {
@@ -18,11 +19,18 @@ function formatPrice(px: string): string {
 
 export default function MarketSelector({ selectedMarket, onSelect }: Props) {
   const { markets, isLoading } = useMarketData();
+  const { positions } = useTrading();
   const [search, setSearch] = useState("");
 
-  const filtered = markets.filter((m) =>
-    m.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const activeMarkets = new Set(positions.map((p) => p.market));
+
+  const filtered = markets
+    .filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => {
+      const aActive = activeMarkets.has(a.name) ? 0 : 1;
+      const bActive = activeMarkets.has(b.name) ? 0 : 1;
+      return aActive - bActive;
+    });
 
   return (
     <aside
@@ -64,20 +72,32 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
         {filtered.map((market: MarketInfo) => {
           const isSelected = market.name === selectedMarket;
           const isPositive = market.change24h >= 0;
+          const hasPosition = activeMarkets.has(market.name);
+          const posCount = positions.filter((p) => p.market === market.name).length;
           return (
             <button
               key={market.name}
               onClick={() => onSelect(market.name)}
               className="w-full flex items-center justify-between px-2 py-1.5 text-xs transition-colors hover:bg-[#1E1E1E]"
               style={{
-                background: isSelected ? "rgba(212,160,23,0.07)" : undefined,
-                borderLeft: isSelected ? "2px solid #D4A017" : "2px solid transparent",
+                background: isSelected ? "rgba(212,160,23,0.07)" : hasPosition ? "rgba(212,160,23,0.03)" : undefined,
+                borderLeft: isSelected ? "2px solid #D4A017" : hasPosition ? "2px solid rgba(212,160,23,0.4)" : "2px solid transparent",
               }}
             >
               <div className="flex flex-col items-start gap-0.5">
-                <span className="font-medium" style={{ color: isSelected ? "#D4A017" : "#F0EBE0" }}>
-                  {market.name}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium" style={{ color: isSelected ? "#D4A017" : "#F0EBE0" }}>
+                    {market.name}
+                  </span>
+                  {hasPosition && (
+                    <span
+                      className="px-1 rounded text-[9px] font-bold leading-none py-0.5"
+                      style={{ background: "rgba(212,160,23,0.2)", color: "#D4A017" }}
+                    >
+                      {posCount}
+                    </span>
+                  )}
+                </div>
                 <span className="font-mono text-[10px]" style={{ color: "#C8BCA8" }}>
                   {formatPrice(market.markPx)}
                 </span>

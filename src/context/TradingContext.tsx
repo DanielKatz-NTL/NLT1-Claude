@@ -25,6 +25,7 @@ export interface DemoPosition {
   fee: number;
   openedAt: Date;
   orderType: "market" | "limit";
+  label?: string;
   stopLoss?: number;
   takeProfit?: number;
   trailingStop?: TrailingStop;
@@ -42,7 +43,7 @@ interface TradingCtx {
   history: ClosedTrade[];
   openPosition: (pos: Omit<DemoPosition, "id" | "openedAt">) => void;
   closePosition: (id: string, markPrice: number, reason?: ClosedTrade["closeReason"]) => void;
-  updatePosition: (id: string, updates: Partial<Pick<DemoPosition, "stopLoss" | "takeProfit" | "trailingStop">>) => void;
+  updatePosition: (id: string, updates: Partial<Pick<DemoPosition, "stopLoss" | "takeProfit" | "trailingStop" | "label">>) => void;
 }
 
 const TradingContext = createContext<TradingCtx>({
@@ -93,7 +94,7 @@ export function TradingProvider({ children }: { children: ReactNode }) {
   );
 
   const updatePosition = useCallback(
-    (id: string, updates: Partial<Pick<DemoPosition, "stopLoss" | "takeProfit" | "trailingStop">>) => {
+    (id: string, updates: Partial<Pick<DemoPosition, "stopLoss" | "takeProfit" | "trailingStop" | "label">>) => {
       setPositions((prev) =>
         prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
       );
