@@ -31,24 +31,24 @@ export default function TradingChart({ market }: Props) {
 
       chart = createChart(containerRef.current, {
         layout: {
-          background: { color: "#0D0E14" },
-          textColor: "#8B92A8",
+          background: { color: "#0A0A0A" },
+          textColor: "#8A8070",
         },
         grid: {
-          vertLines: { color: "#1E2640" },
-          horzLines: { color: "#1E2640" },
+          vertLines: { color: "#2A2A2A" },
+          horzLines: { color: "#2A2A2A" },
         },
         crosshair: {
           mode: CrosshairMode.Normal,
-          vertLine: { color: "#2A3354", labelBackgroundColor: "#161B2E" },
-          horzLine: { color: "#2A3354", labelBackgroundColor: "#161B2E" },
+          vertLine: { color: "#383838", labelBackgroundColor: "#141414" },
+          horzLine: { color: "#383838", labelBackgroundColor: "#141414" },
         },
         rightPriceScale: {
-          borderColor: "#1E2640",
-          textColor: "#8B92A8",
+          borderColor: "#2A2A2A",
+          textColor: "#8A8070",
         },
         timeScale: {
-          borderColor: "#1E2640",
+          borderColor: "#2A2A2A",
           timeVisible: true,
           secondsVisible: false,
         },
@@ -58,17 +58,17 @@ export default function TradingChart({ market }: Props) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const candleSeries = (chart as any).addCandlestickSeries({
-        upColor: "#00FF88",
+        upColor: "#00C853",
         downColor: "#FF4466",
-        borderUpColor: "#00FF88",
+        borderUpColor: "#00C853",
         borderDownColor: "#FF4466",
-        wickUpColor: "#00FF88",
+        wickUpColor: "#00C853",
         wickDownColor: "#FF4466",
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const volumeSeries = (chart as any).addHistogramSeries({
-        color: "#00E5CC",
+        color: "#D4A017",
         priceFormat: { type: "volume" },
         priceScaleId: "volume",
         scaleMargins: { top: 0.85, bottom: 0 },
@@ -124,7 +124,7 @@ export default function TradingChart({ market }: Props) {
         const volumeData = candles.map((c) => ({
           time: Math.floor(c.t / 1000) as unknown as import("lightweight-charts").Time,
           value: parseFloat(c.v),
-          color: parseFloat(c.c) >= parseFloat(c.o) ? "rgba(0,255,136,0.3)" : "rgba(255,68,102,0.3)",
+          color: parseFloat(c.c) >= parseFloat(c.o) ? "rgba(0,200,83,0.3)" : "rgba(255,68,102,0.3)",
         }));
 
         candleSeriesRef.current.setData(candleData);
@@ -139,11 +139,11 @@ export default function TradingChart({ market }: Props) {
   }, [market, interval]);
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#0D0E14" }}>
+    <div className="flex flex-col h-full" style={{ background: "#0A0A0A" }}>
       {/* Interval selector */}
       <div
         className="flex items-center gap-0 px-3 py-1 border-b shrink-0"
-        style={{ borderColor: "#1E2640" }}
+        style={{ borderColor: "#2A2A2A" }}
       >
         {INTERVALS.map((iv) => (
           <button
@@ -151,15 +151,15 @@ export default function TradingChart({ market }: Props) {
             onClick={() => setInterval(iv)}
             className="px-2.5 py-1 text-xs rounded transition-colors"
             style={{
-              color: iv === interval ? "#00E5CC" : "#8B92A8",
-              background: iv === interval ? "rgba(0,229,204,0.1)" : "transparent",
+              color: iv === interval ? "#D4A017" : "#8A8070",
+              background: iv === interval ? "rgba(212,160,23,0.1)" : "transparent",
             }}
           >
             {iv}
           </button>
         ))}
         {isLoading && (
-          <span className="ml-2 text-xs" style={{ color: "#4A5170" }}>Loading...</span>
+          <span className="ml-2 text-xs" style={{ color: "#4A4540" }}>Loading...</span>
         )}
       </div>
 

@@ -10,20 +10,20 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: "#0D0E14",
-          secondary: "#161B2E",
-          tertiary: "#1A2035",
+          primary: "#0A0A0A",
+          secondary: "#141414",
+          tertiary: "#1E1E1E",
         },
         border: {
-          DEFAULT: "#1E2640",
-          light: "#2A3354",
+          DEFAULT: "#2A2A2A",
+          light: "#383838",
         },
         accent: {
-          teal: "#00E5CC",
-          purple: "#7B61FF",
+          gold: "#D4A017",
+          "gold-dim": "#B8860B",
         },
         green: {
-          trade: "#00FF88",
+          trade: "#00C853",
         },
         red: {
           trade: "#FF4466",

@@ -27,10 +27,10 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
   return (
     <aside
       className="flex flex-col h-full border-r"
-      style={{ background: "#161B2E", borderColor: "#1E2640", width: 200 }}
+      style={{ background: "#141414", borderColor: "#2A2A2A", width: 200 }}
     >
       {/* Header */}
-      <div className="p-2 border-b" style={{ borderColor: "#1E2640" }}>
+      <div className="p-2 border-b" style={{ borderColor: "#2A2A2A" }}>
         <input
           type="text"
           placeholder="Search markets..."
@@ -38,9 +38,9 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full px-2 py-1.5 text-xs rounded outline-none"
           style={{
-            background: "#0D0E14",
-            border: "1px solid #1E2640",
-            color: "#E8EAF0",
+            background: "#0A0A0A",
+            border: "1px solid #2A2A2A",
+            color: "#F0EBE0",
           }}
         />
       </div>
@@ -48,7 +48,7 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
       {/* Column headers */}
       <div
         className="flex items-center justify-between px-2 py-1 text-xs"
-        style={{ color: "#4A5170" }}
+        style={{ color: "#4A4540" }}
       >
         <span>Market</span>
         <span>24h%</span>
@@ -57,7 +57,7 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
       {/* Market list */}
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
-          <div className="p-3 text-xs" style={{ color: "#4A5170" }}>
+          <div className="p-3 text-xs" style={{ color: "#4A4540" }}>
             Loading markets...
           </div>
         )}
@@ -68,23 +68,23 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
             <button
               key={market.name}
               onClick={() => onSelect(market.name)}
-              className="w-full flex items-center justify-between px-2 py-1.5 text-xs transition-colors hover:bg-[#1A2035]"
+              className="w-full flex items-center justify-between px-2 py-1.5 text-xs transition-colors hover:bg-[#1E1E1E]"
               style={{
-                background: isSelected ? "rgba(0,229,204,0.07)" : undefined,
-                borderLeft: isSelected ? "2px solid #00E5CC" : "2px solid transparent",
+                background: isSelected ? "rgba(212,160,23,0.07)" : undefined,
+                borderLeft: isSelected ? "2px solid #D4A017" : "2px solid transparent",
               }}
             >
               <div className="flex flex-col items-start gap-0.5">
-                <span className="font-medium" style={{ color: isSelected ? "#00E5CC" : "#E8EAF0" }}>
+                <span className="font-medium" style={{ color: isSelected ? "#D4A017" : "#F0EBE0" }}>
                   {market.name}
                 </span>
-                <span className="font-mono text-[10px]" style={{ color: "#8B92A8" }}>
+                <span className="font-mono text-[10px]" style={{ color: "#8A8070" }}>
                   {formatPrice(market.markPx)}
                 </span>
               </div>
               <span
                 className="font-mono text-[11px] font-medium"
-                style={{ color: isPositive ? "#00FF88" : "#FF4466" }}
+                style={{ color: isPositive ? "#00C853" : "#FF4466" }}
               >
                 {isPositive ? "+" : ""}
                 {market.change24h.toFixed(2)}%

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMarket } from "@/hooks/useMarketData";
+import { BRANDING } from "@/config/branding";
 
 interface Props {
   market: string;
@@ -22,23 +23,35 @@ export default function TradePanel({ market }: Props) {
   const markPrice = marketData?.markPx ?? "0";
   const displayPrice = parseFloat(markPrice);
 
+  const entryPrice =
+    orderType === "limit" && price ? parseFloat(price) : displayPrice;
+  const notionalRaw =
+    size && parseFloat(size) > 0 && entryPrice > 0
+      ? parseFloat(size) * entryPrice
+      : 0;
   const notional =
-    size && parseFloat(size) > 0
-      ? (parseFloat(size) * (orderType === "limit" && price ? parseFloat(price) : displayPrice)).toLocaleString(
-          "en-US",
-          { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-        )
+    notionalRaw > 0
+      ? notionalRaw.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
       : "—";
+  const marginRaw = notionalRaw > 0 ? notionalRaw / leverage : 0;
+  const feeRate =
+    orderType === "market"
+      ? parseFloat(BRANDING.fees.taker) / 100
+      : parseFloat(BRANDING.fees.maker) / 100;
+  const feeRaw = notionalRaw * feeRate;
 
   const isLong = side === "long";
 
   return (
     <div
       className="flex flex-col h-full"
-      style={{ background: "#161B2E", borderLeft: "1px solid #1E2640" }}
+      style={{ background: "#141414", borderLeft: "1px solid #2A2A2A" }}
     >
       {/* Side tabs */}
-      <div className="flex shrink-0" style={{ borderBottom: "1px solid #1E2640" }}>
+      <div className="flex shrink-0" style={{ borderBottom: "1px solid #2A2A2A" }}>
         {(["long", "short"] as Side[]).map((s) => (
           <button
             key={s}
@@ -48,17 +61,17 @@ export default function TradePanel({ market }: Props) {
               color:
                 side === s
                   ? s === "long"
-                    ? "#00FF88"
+                    ? "#00C853"
                     : "#FF4466"
-                  : "#4A5170",
+                  : "#4A4540",
               borderBottom:
                 side === s
-                  ? `2px solid ${s === "long" ? "#00FF88" : "#FF4466"}`
+                  ? `2px solid ${s === "long" ? "#00C853" : "#FF4466"}`
                   : "2px solid transparent",
               background:
                 side === s
                   ? s === "long"
-                    ? "rgba(0,255,136,0.06)"
+                    ? "rgba(0,200,83,0.06)"
                     : "rgba(255,68,102,0.06)"
                   : "transparent",
             }}
@@ -72,7 +85,7 @@ export default function TradePanel({ market }: Props) {
       <div className="flex flex-col gap-3 p-3 flex-1 overflow-y-auto">
         {/* Order type */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-medium" style={{ color: "#4A5170" }}>
+          <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
             Order Type
           </label>
           <select
@@ -80,9 +93,9 @@ export default function TradePanel({ market }: Props) {
             onChange={(e) => setOrderType(e.target.value as OrderType)}
             className="w-full px-2 py-1.5 rounded text-xs outline-none cursor-pointer"
             style={{
-              background: "#0D0E14",
-              border: "1px solid #1E2640",
-              color: "#E8EAF0",
+              background: "#0A0A0A",
+              border: "1px solid #2A2A2A",
+              color: "#F0EBE0",
             }}
           >
             <option value="market">Market</option>
@@ -93,7 +106,7 @@ export default function TradePanel({ market }: Props) {
         {/* Price (limit only) */}
         {orderType === "limit" && (
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-medium" style={{ color: "#4A5170" }}>
+            <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
               Price (USD)
             </label>
             <input
@@ -103,9 +116,9 @@ export default function TradePanel({ market }: Props) {
               onChange={(e) => setPrice(e.target.value)}
               className="w-full px-2 py-1.5 rounded text-xs outline-none"
               style={{
-                background: "#0D0E14",
-                border: "1px solid #1E2640",
-                color: "#E8EAF0",
+                background: "#0A0A0A",
+                border: "1px solid #2A2A2A",
+                color: "#F0EBE0",
               }}
             />
           </div>
@@ -113,7 +126,7 @@ export default function TradePanel({ market }: Props) {
 
         {/* Size */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-medium" style={{ color: "#4A5170" }}>
+          <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
             Size ({market})
           </label>
           <input
@@ -123,9 +136,9 @@ export default function TradePanel({ market }: Props) {
             onChange={(e) => setSize(e.target.value)}
             className="w-full px-2 py-1.5 rounded text-xs outline-none"
             style={{
-              background: "#0D0E14",
-              border: "1px solid #1E2640",
-              color: "#E8EAF0",
+              background: "#0A0A0A",
+              border: "1px solid #2A2A2A",
+              color: "#F0EBE0",
             }}
           />
           {/* Quick size buttons */}
@@ -135,9 +148,9 @@ export default function TradePanel({ market }: Props) {
                 key={pct}
                 className="flex-1 py-0.5 rounded text-[10px] transition-colors hover:brightness-125"
                 style={{
-                  background: "#0D0E14",
-                  border: "1px solid #1E2640",
-                  color: "#8B92A8",
+                  background: "#0A0A0A",
+                  border: "1px solid #2A2A2A",
+                  color: "#8A8070",
                 }}
               >
                 {pct}
@@ -149,12 +162,12 @@ export default function TradePanel({ market }: Props) {
         {/* Leverage */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <label className="text-[10px] font-medium" style={{ color: "#4A5170" }}>
+            <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
               Leverage
             </label>
             <span
               className="text-xs font-mono font-semibold"
-              style={{ color: "#00E5CC" }}
+              style={{ color: "#D4A017" }}
             >
               {leverage}x
             </span>
@@ -166,10 +179,10 @@ export default function TradePanel({ market }: Props) {
             step={1}
             value={leverage}
             onChange={(e) => setLeverage(parseInt(e.target.value))}
-            className="w-full accent-[#00E5CC]"
-            style={{ accentColor: "#00E5CC" }}
+            className="w-full"
+            style={{ accentColor: "#D4A017" }}
           />
-          <div className="flex justify-between text-[9px]" style={{ color: "#4A5170" }}>
+          <div className="flex justify-between text-[9px]" style={{ color: "#4A4540" }}>
             <span>1x</span>
             <span>{Math.round((marketData?.maxLeverage ?? 50) / 2)}x</span>
             <span>{marketData?.maxLeverage ?? 50}x</span>
@@ -178,23 +191,20 @@ export default function TradePanel({ market }: Props) {
 
         {/* Order summary */}
         <div
-          className="rounded p-2 text-[10px] flex flex-col gap-1"
-          style={{ background: "#0D0E14", border: "1px solid #1E2640" }}
+          className="rounded p-2 text-[10px] flex flex-col gap-1.5"
+          style={{ background: "#0A0A0A", border: "1px solid #2A2A2A" }}
         >
           <div className="flex justify-between">
-            <span style={{ color: "#4A5170" }}>Est. Notional</span>
-            <span className="font-mono" style={{ color: "#8B92A8" }}>
+            <span style={{ color: "#4A4540" }}>Est. Notional</span>
+            <span className="font-mono" style={{ color: "#8A8070" }}>
               ${notional}
             </span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: "#4A5170" }}>Margin Required</span>
-            <span className="font-mono" style={{ color: "#8B92A8" }}>
-              {size && parseFloat(size) > 0 && displayPrice > 0
-                ? `$${(
-                    (parseFloat(size) * displayPrice) /
-                    leverage
-                  ).toLocaleString("en-US", {
+            <span style={{ color: "#4A4540" }}>Margin Required</span>
+            <span className="font-mono" style={{ color: "#8A8070" }}>
+              {marginRaw > 0
+                ? `$${marginRaw.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}`
@@ -202,16 +212,54 @@ export default function TradePanel({ market }: Props) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: "#4A5170" }}>
+            <span style={{ color: "#4A4540" }}>
               {orderType === "market" ? "Mark Price" : "Limit Price"}
             </span>
-            <span className="font-mono" style={{ color: "#8B92A8" }}>
-              {orderType === "market"
-                ? displayPrice > 0
-                  ? `$${displayPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                  : "—"
-                : price
-                ? `$${parseFloat(price).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            <span className="font-mono" style={{ color: "#8A8070" }}>
+              {entryPrice > 0
+                ? `$${entryPrice.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`
+                : "—"}
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div style={{ borderTop: "1px solid #2A2A2A", margin: "2px 0" }} />
+
+          {/* Fee rows */}
+          <div className="flex justify-between">
+            <span style={{ color: "#4A4540" }}>
+              {orderType === "market" ? "Taker" : "Maker"} Fee
+              <span
+                className="ml-1 px-1 rounded"
+                style={{
+                  background: "rgba(212,160,23,0.12)",
+                  color: "#D4A017",
+                  fontSize: "9px",
+                }}
+              >
+                {orderType === "market" ? BRANDING.fees.taker : BRANDING.fees.maker}
+              </span>
+            </span>
+            <span className="font-mono" style={{ color: "#8A8070" }}>
+              {feeRaw > 0
+                ? `$${feeRaw.toLocaleString("en-US", {
+                    minimumFractionDigits: 4,
+                    maximumFractionDigits: 4,
+                  })}`
+                : "—"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span style={{ color: "#4A4540" }}>Total Cost</span>
+            <span className="font-mono font-semibold" style={{ color: "#F0EBE0" }}>
+              {marginRaw > 0
+                ? `$${(marginRaw + feeRaw).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`
                 : "—"}
             </span>
           </div>
@@ -219,14 +267,14 @@ export default function TradePanel({ market }: Props) {
       </div>
 
       {/* Submit button */}
-      <div className="p-3 shrink-0" style={{ borderTop: "1px solid #1E2640" }}>
+      <div className="p-3 shrink-0" style={{ borderTop: "1px solid #2A2A2A" }}>
         <button
           className="w-full py-2.5 rounded font-semibold text-sm transition-all hover:brightness-110 active:scale-[0.98]"
           style={{
             background: isLong
-              ? "linear-gradient(135deg, #00FF88, #00CC77)"
+              ? "linear-gradient(135deg, #00C853, #009C3B)"
               : "linear-gradient(135deg, #FF4466, #CC2244)",
-            color: "#0D0E14",
+            color: "#0A0A0A",
           }}
         >
           {isLong ? "Buy / Long" : "Sell / Short"} {market}

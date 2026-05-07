@@ -1,6 +1,10 @@
 export const BRANDING = {
   name: "OnyxCap",
   tagline: "Decentralized Perpetuals",
-  primaryColor: "#00E5CC",
-  accentColor: "#7B61FF",
+  primaryColor: "#D4A017",
+  accentColor: "#B8860B",
+  fees: {
+    maker: "0.02%",
+    taker: "0.05%",
+  },
 };

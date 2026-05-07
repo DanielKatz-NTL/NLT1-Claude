@@ -5,18 +5,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-primary: #0D0E14;
-  --bg-secondary: #161B2E;
-  --bg-tertiary: #1A2035;
-  --border: #1E2640;
-  --border-light: #2A3354;
-  --accent-teal: #00E5CC;
-  --accent-purple: #7B61FF;
-  --green: #00FF88;
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1E1E1E;
+  --border: #2A2A2A;
+  --border-light: #383838;
+  --accent-gold: #D4A017;
+  --accent-gold-dim: #B8860B;
+  --green: #00C853;
   --red: #FF4466;
-  --text-primary: #E8EAF0;
-  --text-secondary: #8B92A8;
-  --text-muted: #4A5170;
+  --text-primary: #F0EBE0;
+  --text-secondary: #8A8070;
+  --text-muted: #4A4540;
 }
 
 * {
@@ -50,7 +50,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-teal);
+  background: var(--accent-gold);
 }
 
 /* Number font */
@@ -61,5 +61,5 @@ body {
 
 .text-green { color: var(--green); }
 .text-red { color: var(--red); }
-.text-teal { color: var(--accent-teal); }
+.text-gold { color: var(--accent-gold); }
 .text-muted { color: var(--text-secondary); }

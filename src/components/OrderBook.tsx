@@ -42,22 +42,22 @@ function BookRow({ level, side, maxSize }: BookRowProps) {
         className="absolute inset-y-0 right-0"
         style={{
           width: `${pct}%`,
-          background: isAsk ? "rgba(255,68,102,0.12)" : "rgba(0,255,136,0.12)",
+          background: isAsk ? "rgba(255,68,102,0.12)" : "rgba(0,200,83,0.12)",
         }}
       />
       {/* Price */}
       <span
         className="relative z-10 w-24 text-left"
-        style={{ color: isAsk ? "#FF4466" : "#00FF88" }}
+        style={{ color: isAsk ? "#FF4466" : "#00C853" }}
       >
         {formatPrice(level.px)}
       </span>
       {/* Size */}
-      <span className="relative z-10 w-20 text-right" style={{ color: "#E8EAF0" }}>
+      <span className="relative z-10 w-20 text-right" style={{ color: "#F0EBE0" }}>
         {formatSize(level.sz)}
       </span>
       {/* Count */}
-      <span className="relative z-10 w-8 text-right" style={{ color: "#4A5170" }}>
+      <span className="relative z-10 w-8 text-right" style={{ color: "#4A4540" }}>
         {level.n}
       </span>
     </div>
@@ -87,18 +87,18 @@ export default function OrderBook({ market }: Props) {
   return (
     <div
       className="flex flex-col h-full"
-      style={{ background: "#161B2E", borderLeft: "1px solid #1E2640" }}
+      style={{ background: "#141414", borderLeft: "1px solid #2A2A2A" }}
     >
       {/* Header */}
       <div
         className="flex items-center justify-between px-2 py-2 border-b shrink-0"
-        style={{ borderColor: "#1E2640" }}
+        style={{ borderColor: "#2A2A2A" }}
       >
-        <span className="text-xs font-semibold" style={{ color: "#E8EAF0" }}>
+        <span className="text-xs font-semibold" style={{ color: "#F0EBE0" }}>
           Order Book
         </span>
         {isLoading && (
-          <span className="text-[10px]" style={{ color: "#4A5170" }}>
+          <span className="text-[10px]" style={{ color: "#4A4540" }}>
             refreshing...
           </span>
         )}
@@ -107,7 +107,7 @@ export default function OrderBook({ market }: Props) {
       {/* Column labels */}
       <div
         className="flex items-center justify-between px-2 py-1 text-[10px]"
-        style={{ color: "#4A5170", borderBottom: "1px solid #1E2640" }}
+        style={{ color: "#4A4540", borderBottom: "1px solid #2A2A2A" }}
       >
         <span className="w-24">Price</span>
         <span className="w-20 text-right">Size</span>
@@ -127,16 +127,16 @@ export default function OrderBook({ market }: Props) {
           <div
             className="flex items-center justify-between px-2 py-1 text-[10px] shrink-0"
             style={{
-              background: "#0D0E14",
-              borderTop: "1px solid #1E2640",
-              borderBottom: "1px solid #1E2640",
+              background: "#0A0A0A",
+              borderTop: "1px solid #2A2A2A",
+              borderBottom: "1px solid #2A2A2A",
             }}
           >
-            <span style={{ color: "#4A5170" }}>Spread</span>
-            <span className="font-mono" style={{ color: "#8B92A8" }}>
+            <span style={{ color: "#4A4540" }}>Spread</span>
+            <span className="font-mono" style={{ color: "#8A8070" }}>
               {formatPrice(spread.toString())}
             </span>
-            <span className="font-mono" style={{ color: "#4A5170" }}>
+            <span className="font-mono" style={{ color: "#4A4540" }}>
               {spreadPct}%
             </span>
           </div>
