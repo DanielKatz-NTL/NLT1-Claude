@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { BRANDING } from "@/config/branding";
+import { WalletProvider } from "@/context/WalletContext";
 
 export const metadata: Metadata = {
   title: `${BRANDING.name} — ${BRANDING.tagline}`,
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#0A0A0A] text-[#F0EBE0] min-h-screen">
-        {children}
+        <WalletProvider>{children}</WalletProvider>
       </body>
     </html>
   );

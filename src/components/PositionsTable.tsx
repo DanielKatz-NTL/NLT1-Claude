@@ -56,7 +56,7 @@ function EmptyState({ label }: { label: string }) {
           height="20"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#4A4540"
+          stroke="#8C8278"
           strokeWidth="1.5"
         >
           <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -64,7 +64,7 @@ function EmptyState({ label }: { label: string }) {
           <line x1="9" y1="21" x2="9" y2="9" />
         </svg>
       </div>
-      <span className="text-xs" style={{ color: "#4A4540" }}>
+      <span className="text-xs" style={{ color: "#8C8278" }}>
         No {label}
       </span>
     </div>
@@ -104,7 +104,7 @@ export default function PositionsTable() {
             onClick={() => setActiveTab(key)}
             className="px-4 py-2 text-xs font-medium transition-colors"
             style={{
-              color: activeTab === key ? "#D4A017" : "#4A4540",
+              color: activeTab === key ? "#D4A017" : "#8C8278",
               borderBottom:
                 activeTab === key
                   ? "2px solid #D4A017"
@@ -125,7 +125,7 @@ export default function PositionsTable() {
                 <th
                   key={h}
                   className="px-3 py-2 text-left font-medium whitespace-nowrap"
-                  style={{ color: "#4A4540" }}
+                  style={{ color: "#8C8278" }}
                 >
                   {h}
                 </th>

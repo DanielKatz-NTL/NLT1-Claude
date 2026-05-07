@@ -37,7 +37,7 @@ export default function MarketStats({ market }: Props) {
     return (
       <div
         className="flex items-center gap-6 px-4 h-12 border-b text-xs"
-        style={{ background: "#141414", borderColor: "#2A2A2A", color: "#4A4540" }}
+        style={{ background: "#141414", borderColor: "#2A2A2A", color: "#8C8278" }}
       >
         <span>Loading market data...</span>
       </div>
@@ -57,13 +57,13 @@ export default function MarketStats({ market }: Props) {
       <div className="flex items-center gap-2 pr-4 mr-3 border-r" style={{ borderColor: "#2A2A2A" }}>
         <span className="font-semibold text-sm" style={{ color: "#F0EBE0" }}>
           {data.name}
-          <span className="text-xs ml-1" style={{ color: "#4A4540" }}>PERP</span>
+          <span className="text-xs ml-1" style={{ color: "#8C8278" }}>PERP</span>
         </span>
       </div>
 
       {/* Mark price */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>Mark Price</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>Mark Price</span>
         <span
           className="font-mono text-sm font-semibold"
           style={{ color: isPositive ? "#00C853" : "#FF4466" }}
@@ -76,7 +76,7 @@ export default function MarketStats({ market }: Props) {
 
       {/* 24h Change */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>24h Change</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>24h Change</span>
         <span
           className="font-mono text-xs font-medium"
           style={{ color: isPositive ? "#00C853" : "#FF4466" }}
@@ -88,7 +88,7 @@ export default function MarketStats({ market }: Props) {
 
       {/* 24h Volume */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>24h Volume</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>24h Volume</span>
         <span className="font-mono text-xs" style={{ color: "#F0EBE0" }}>
           {formatVolume(data.dayNtlVlm)}
         </span>
@@ -96,7 +96,7 @@ export default function MarketStats({ market }: Props) {
 
       {/* Open Interest */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>Open Interest</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>Open Interest</span>
         <span className="font-mono text-xs" style={{ color: "#F0EBE0" }}>
           {formatOI(data.openInterest, data.markPx)}
         </span>
@@ -104,7 +104,7 @@ export default function MarketStats({ market }: Props) {
 
       {/* Funding Rate */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>Funding Rate</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>Funding Rate</span>
         <span
           className="font-mono text-xs font-medium"
           style={{ color: fundingPositive ? "#00C853" : "#FF4466" }}
@@ -115,7 +115,7 @@ export default function MarketStats({ market }: Props) {
 
       {/* Max Leverage */}
       <div className="flex flex-col px-3">
-        <span className="text-[10px]" style={{ color: "#4A4540" }}>Max Leverage</span>
+        <span className="text-[10px]" style={{ color: "#8C8278" }}>Max Leverage</span>
         <span className="font-mono text-xs" style={{ color: "#D4A017" }}>
           {data.maxLeverage}x
         </span>

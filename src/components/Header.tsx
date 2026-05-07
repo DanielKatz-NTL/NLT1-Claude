@@ -1,8 +1,19 @@
 "use client";
 
 import { BRANDING } from "@/config/branding";
+import { useWallet } from "@/context/WalletContext";
 
-export default function Header() {
+interface Props {
+  activeView: "trade" | "portfolio" | "leaderboard";
+  onNav: (view: "trade" | "portfolio" | "leaderboard") => void;
+}
+
+export default function Header({ activeView, onNav }: Props) {
+  const { address, connecting, connect, disconnect } = useWallet();
+
+  const truncate = (addr: string) =>
+    addr.slice(0, 6) + "..." + addr.slice(-4);
+
   return (
     <header
       className="flex items-center justify-between px-4 h-12 border-b shrink-0"
@@ -20,38 +31,60 @@ export default function Header() {
         <span className="font-semibold text-base tracking-wide" style={{ color: "#F0EBE0" }}>
           {BRANDING.name}
         </span>
-        <span className="text-xs hidden sm:block" style={{ color: "#4A4540" }}>
+        <span className="text-xs hidden sm:block" style={{ color: "#8C8278" }}>
           {BRANDING.tagline}
         </span>
       </div>
 
       {/* Nav */}
       <nav className="hidden md:flex items-center gap-1">
-        {["Trade", "Portfolio", "Leaderboard"].map((label) => (
-          <button
-            key={label}
-            className="px-4 py-1.5 rounded text-sm font-medium transition-colors"
-            style={{
-              color: label === "Trade" ? "#D4A017" : "#8A8070",
-              background: label === "Trade" ? "rgba(212,160,23,0.08)" : "transparent",
-            }}
-          >
-            {label}
-          </button>
-        ))}
+        {(["Trade", "Portfolio", "Leaderboard"] as const).map((label) => {
+          const view = label.toLowerCase() as "trade" | "portfolio" | "leaderboard";
+          const isActive = activeView === view;
+          return (
+            <button
+              key={label}
+              onClick={() => onNav(view)}
+              className="px-4 py-1.5 rounded text-sm font-medium transition-colors"
+              style={{
+                color: isActive ? "#D4A017" : "#C8BCA8",
+                background: isActive ? "rgba(212,160,23,0.08)" : "transparent",
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
       </nav>
 
-      {/* Connect Wallet */}
-      <button
-        className="flex items-center gap-2 px-4 py-1.5 rounded text-sm font-semibold transition-all hover:brightness-110 active:scale-95"
-        style={{
-          background: "linear-gradient(135deg, #D4A017, #B8860B)",
-          color: "#0A0A0A",
-        }}
-      >
-        <span className="w-2 h-2 rounded-full bg-[#0A0A0A] opacity-60" />
-        Connect Wallet
-      </button>
+      {/* Connect Wallet / Wallet Address */}
+      {address ? (
+        <button
+          onClick={disconnect}
+          className="flex items-center gap-2 px-4 py-1.5 rounded text-sm font-semibold transition-all hover:brightness-110 active:scale-95"
+          style={{
+            background: "#1E1E1E",
+            color: "#F0EBE0",
+            border: "1px solid #2A2A2A",
+          }}
+        >
+          <span className="w-2 h-2 rounded-full bg-[#00C853]" />
+          {truncate(address)}
+        </button>
+      ) : (
+        <button
+          onClick={connect}
+          disabled={connecting}
+          className="flex items-center gap-2 px-4 py-1.5 rounded text-sm font-semibold transition-all hover:brightness-110 active:scale-95 disabled:opacity-60"
+          style={{
+            background: "linear-gradient(135deg, #D4A017, #B8860B)",
+            color: "#0A0A0A",
+          }}
+        >
+          <span className="w-2 h-2 rounded-full bg-[#0A0A0A] opacity-60" />
+          {connecting ? "Connecting..." : "Connect Wallet"}
+        </button>
+      )}
     </header>
   );
 }

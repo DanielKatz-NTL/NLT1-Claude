@@ -48,7 +48,7 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
       {/* Column headers */}
       <div
         className="flex items-center justify-between px-2 py-1 text-xs"
-        style={{ color: "#4A4540" }}
+        style={{ color: "#8C8278" }}
       >
         <span>Market</span>
         <span>24h%</span>
@@ -57,7 +57,7 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
       {/* Market list */}
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
-          <div className="p-3 text-xs" style={{ color: "#4A4540" }}>
+          <div className="p-3 text-xs" style={{ color: "#8C8278" }}>
             Loading markets...
           </div>
         )}
@@ -78,7 +78,7 @@ export default function MarketSelector({ selectedMarket, onSelect }: Props) {
                 <span className="font-medium" style={{ color: isSelected ? "#D4A017" : "#F0EBE0" }}>
                   {market.name}
                 </span>
-                <span className="font-mono text-[10px]" style={{ color: "#8A8070" }}>
+                <span className="font-mono text-[10px]" style={{ color: "#C8BCA8" }}>
                   {formatPrice(market.markPx)}
                 </span>
               </div>

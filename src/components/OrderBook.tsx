@@ -57,7 +57,7 @@ function BookRow({ level, side, maxSize }: BookRowProps) {
         {formatSize(level.sz)}
       </span>
       {/* Count */}
-      <span className="relative z-10 w-8 text-right" style={{ color: "#4A4540" }}>
+      <span className="relative z-10 w-8 text-right" style={{ color: "#8C8278" }}>
         {level.n}
       </span>
     </div>
@@ -98,7 +98,7 @@ export default function OrderBook({ market }: Props) {
           Order Book
         </span>
         {isLoading && (
-          <span className="text-[10px]" style={{ color: "#4A4540" }}>
+          <span className="text-[10px]" style={{ color: "#8C8278" }}>
             refreshing...
           </span>
         )}
@@ -107,7 +107,7 @@ export default function OrderBook({ market }: Props) {
       {/* Column labels */}
       <div
         className="flex items-center justify-between px-2 py-1 text-[10px]"
-        style={{ color: "#4A4540", borderBottom: "1px solid #2A2A2A" }}
+        style={{ color: "#8C8278", borderBottom: "1px solid #2A2A2A" }}
       >
         <span className="w-24">Price</span>
         <span className="w-20 text-right">Size</span>
@@ -132,11 +132,11 @@ export default function OrderBook({ market }: Props) {
               borderBottom: "1px solid #2A2A2A",
             }}
           >
-            <span style={{ color: "#4A4540" }}>Spread</span>
-            <span className="font-mono" style={{ color: "#8A8070" }}>
+            <span style={{ color: "#8C8278" }}>Spread</span>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {formatPrice(spread.toString())}
             </span>
-            <span className="font-mono" style={{ color: "#4A4540" }}>
+            <span className="font-mono" style={{ color: "#8C8278" }}>
               {spreadPct}%
             </span>
           </div>

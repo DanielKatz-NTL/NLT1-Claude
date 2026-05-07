@@ -63,7 +63,7 @@ export default function TradePanel({ market }: Props) {
                   ? s === "long"
                     ? "#00C853"
                     : "#FF4466"
-                  : "#4A4540",
+                  : "#8C8278",
               borderBottom:
                 side === s
                   ? `2px solid ${s === "long" ? "#00C853" : "#FF4466"}`
@@ -85,7 +85,7 @@ export default function TradePanel({ market }: Props) {
       <div className="flex flex-col gap-3 p-3 flex-1 overflow-y-auto">
         {/* Order type */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
+          <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
             Order Type
           </label>
           <select
@@ -106,7 +106,7 @@ export default function TradePanel({ market }: Props) {
         {/* Price (limit only) */}
         {orderType === "limit" && (
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
+            <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
               Price (USD)
             </label>
             <input
@@ -126,7 +126,7 @@ export default function TradePanel({ market }: Props) {
 
         {/* Size */}
         <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
+          <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
             Size ({market})
           </label>
           <input
@@ -150,7 +150,7 @@ export default function TradePanel({ market }: Props) {
                 style={{
                   background: "#0A0A0A",
                   border: "1px solid #2A2A2A",
-                  color: "#8A8070",
+                  color: "#C8BCA8",
                 }}
               >
                 {pct}
@@ -162,7 +162,7 @@ export default function TradePanel({ market }: Props) {
         {/* Leverage */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <label className="text-[10px] font-medium" style={{ color: "#4A4540" }}>
+            <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
               Leverage
             </label>
             <span
@@ -182,7 +182,7 @@ export default function TradePanel({ market }: Props) {
             className="w-full"
             style={{ accentColor: "#D4A017" }}
           />
-          <div className="flex justify-between text-[9px]" style={{ color: "#4A4540" }}>
+          <div className="flex justify-between text-[9px]" style={{ color: "#8C8278" }}>
             <span>1x</span>
             <span>{Math.round((marketData?.maxLeverage ?? 50) / 2)}x</span>
             <span>{marketData?.maxLeverage ?? 50}x</span>
@@ -195,14 +195,14 @@ export default function TradePanel({ market }: Props) {
           style={{ background: "#0A0A0A", border: "1px solid #2A2A2A" }}
         >
           <div className="flex justify-between">
-            <span style={{ color: "#4A4540" }}>Est. Notional</span>
-            <span className="font-mono" style={{ color: "#8A8070" }}>
+            <span style={{ color: "#8C8278" }}>Est. Notional</span>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>
               ${notional}
             </span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: "#4A4540" }}>Margin Required</span>
-            <span className="font-mono" style={{ color: "#8A8070" }}>
+            <span style={{ color: "#8C8278" }}>Margin Required</span>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {marginRaw > 0
                 ? `$${marginRaw.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
@@ -212,10 +212,10 @@ export default function TradePanel({ market }: Props) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: "#4A4540" }}>
+            <span style={{ color: "#8C8278" }}>
               {orderType === "market" ? "Mark Price" : "Limit Price"}
             </span>
-            <span className="font-mono" style={{ color: "#8A8070" }}>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {entryPrice > 0
                 ? `$${entryPrice.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
@@ -230,7 +230,7 @@ export default function TradePanel({ market }: Props) {
 
           {/* Fee rows */}
           <div className="flex justify-between">
-            <span style={{ color: "#4A4540" }}>
+            <span style={{ color: "#8C8278" }}>
               {orderType === "market" ? "Taker" : "Maker"} Fee
               <span
                 className="ml-1 px-1 rounded"
@@ -243,7 +243,7 @@ export default function TradePanel({ market }: Props) {
                 {orderType === "market" ? BRANDING.fees.taker : BRANDING.fees.maker}
               </span>
             </span>
-            <span className="font-mono" style={{ color: "#8A8070" }}>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {feeRaw > 0
                 ? `$${feeRaw.toLocaleString("en-US", {
                     minimumFractionDigits: 4,
@@ -253,7 +253,7 @@ export default function TradePanel({ market }: Props) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: "#4A4540" }}>Total Cost</span>
+            <span style={{ color: "#8C8278" }}>Total Cost</span>
             <span className="font-mono font-semibold" style={{ color: "#F0EBE0" }}>
               {marginRaw > 0
                 ? `$${(marginRaw + feeRaw).toLocaleString("en-US", {

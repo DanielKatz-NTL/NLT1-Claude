@@ -32,7 +32,7 @@ export default function TradingChart({ market }: Props) {
       chart = createChart(containerRef.current, {
         layout: {
           background: { color: "#0A0A0A" },
-          textColor: "#8A8070",
+          textColor: "#C8BCA8",
         },
         grid: {
           vertLines: { color: "#2A2A2A" },
@@ -45,7 +45,7 @@ export default function TradingChart({ market }: Props) {
         },
         rightPriceScale: {
           borderColor: "#2A2A2A",
-          textColor: "#8A8070",
+          textColor: "#C8BCA8",
         },
         timeScale: {
           borderColor: "#2A2A2A",
@@ -151,7 +151,7 @@ export default function TradingChart({ market }: Props) {
             onClick={() => setInterval(iv)}
             className="px-2.5 py-1 text-xs rounded transition-colors"
             style={{
-              color: iv === interval ? "#D4A017" : "#8A8070",
+              color: iv === interval ? "#D4A017" : "#C8BCA8",
               background: iv === interval ? "rgba(212,160,23,0.1)" : "transparent",
             }}
           >
@@ -159,7 +159,7 @@ export default function TradingChart({ market }: Props) {
           </button>
         ))}
         {isLoading && (
-          <span className="ml-2 text-xs" style={{ color: "#4A4540" }}>Loading...</span>
+          <span className="ml-2 text-xs" style={{ color: "#8C8278" }}>Loading...</span>
         )}
       </div>
 
