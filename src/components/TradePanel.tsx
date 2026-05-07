@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMarket } from "@/hooks/useMarketData";
 import { BRANDING } from "@/config/branding";
+import { useTrading } from "@/context/TradingContext";
 
 interface Props {
   market: string;
@@ -13,12 +14,14 @@ type OrderType = "market" | "limit";
 
 export default function TradePanel({ market }: Props) {
   const { market: marketData } = useMarket(market);
+  const { openPosition } = useTrading();
 
   const [side, setSide] = useState<Side>("long");
   const [orderType, setOrderType] = useState<OrderType>("market");
   const [price, setPrice] = useState("");
   const [size, setSize] = useState("");
   const [leverage, setLeverage] = useState(10);
+  const [flash, setFlash] = useState<"success" | "error" | null>(null);
 
   const markPrice = marketData?.markPx ?? "0";
   const displayPrice = parseFloat(markPrice);
@@ -43,7 +46,45 @@ export default function TradePanel({ market }: Props) {
       : parseFloat(BRANDING.fees.maker) / 100;
   const feeRaw = notionalRaw * feeRate;
 
+  // Simplified liq price: long = entry*(1 - 1/lev + 0.005), short = entry*(1 + 1/lev - 0.005)
+  const liqPrice =
+    entryPrice > 0 && parseFloat(size) > 0
+      ? side === "long"
+        ? entryPrice * (1 - 1 / leverage + 0.005)
+        : entryPrice * (1 + 1 / leverage - 0.005)
+      : null;
+
   const isLong = side === "long";
+
+  function handleSubmit() {
+    const sizeNum = parseFloat(size);
+    if (!sizeNum || sizeNum <= 0) {
+      setFlash("error");
+      setTimeout(() => setFlash(null), 1500);
+      return;
+    }
+    if (!entryPrice || entryPrice <= 0) {
+      setFlash("error");
+      setTimeout(() => setFlash(null), 1500);
+      return;
+    }
+
+    openPosition({
+      market,
+      side,
+      size: sizeNum,
+      entryPrice,
+      leverage,
+      margin: marginRaw,
+      fee: feeRaw,
+      orderType,
+    });
+
+    setFlash("success");
+    setTimeout(() => setFlash(null), 2000);
+    setSize("");
+    setPrice("");
+  }
 
   return (
     <div
@@ -79,6 +120,16 @@ export default function TradePanel({ market }: Props) {
             {s}
           </button>
         ))}
+      </div>
+
+      {/* Demo badge */}
+      <div className="px-3 pt-2 shrink-0">
+        <span
+          className="text-[10px] px-2 py-0.5 rounded font-medium"
+          style={{ background: "rgba(212,160,23,0.12)", color: "#D4A017" }}
+        >
+          Demo Mode — no real funds
+        </span>
       </div>
 
       {/* Form */}
@@ -136,12 +187,11 @@ export default function TradePanel({ market }: Props) {
             onChange={(e) => setSize(e.target.value)}
             className="w-full px-2 py-1.5 rounded text-xs outline-none"
             style={{
-              background: "#0A0A0A",
-              border: "1px solid #2A2A2A",
+              background: flash === "error" ? "rgba(255,68,102,0.08)" : "#0A0A0A",
+              border: `1px solid ${flash === "error" ? "#FF4466" : "#2A2A2A"}`,
               color: "#F0EBE0",
             }}
           />
-          {/* Quick size buttons */}
           <div className="flex gap-1 mt-0.5">
             {["25%", "50%", "75%", "100%"].map((pct) => (
               <button
@@ -165,10 +215,7 @@ export default function TradePanel({ market }: Props) {
             <label className="text-[10px] font-medium" style={{ color: "#8C8278" }}>
               Leverage
             </label>
-            <span
-              className="text-xs font-mono font-semibold"
-              style={{ color: "#D4A017" }}
-            >
+            <span className="text-xs font-mono font-semibold" style={{ color: "#D4A017" }}>
               {leverage}x
             </span>
           </div>
@@ -196,18 +243,13 @@ export default function TradePanel({ market }: Props) {
         >
           <div className="flex justify-between">
             <span style={{ color: "#8C8278" }}>Est. Notional</span>
-            <span className="font-mono" style={{ color: "#C8BCA8" }}>
-              ${notional}
-            </span>
+            <span className="font-mono" style={{ color: "#C8BCA8" }}>${notional}</span>
           </div>
           <div className="flex justify-between">
             <span style={{ color: "#8C8278" }}>Margin Required</span>
             <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {marginRaw > 0
-                ? `$${marginRaw.toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}`
+                ? `$${marginRaw.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                 : "—"}
             </span>
           </div>
@@ -217,38 +259,32 @@ export default function TradePanel({ market }: Props) {
             </span>
             <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {entryPrice > 0
-                ? `$${entryPrice.toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}`
+                ? `$${entryPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                 : "—"}
             </span>
           </div>
-
-          {/* Divider */}
+          {liqPrice && (
+            <div className="flex justify-between">
+              <span style={{ color: "#8C8278" }}>Liq. Price</span>
+              <span className="font-mono" style={{ color: "#FF4466" }}>
+                ${liqPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+          )}
           <div style={{ borderTop: "1px solid #2A2A2A", margin: "2px 0" }} />
-
-          {/* Fee rows */}
           <div className="flex justify-between">
             <span style={{ color: "#8C8278" }}>
               {orderType === "market" ? "Taker" : "Maker"} Fee
               <span
                 className="ml-1 px-1 rounded"
-                style={{
-                  background: "rgba(212,160,23,0.12)",
-                  color: "#D4A017",
-                  fontSize: "9px",
-                }}
+                style={{ background: "rgba(212,160,23,0.12)", color: "#D4A017", fontSize: "9px" }}
               >
                 {orderType === "market" ? BRANDING.fees.taker : BRANDING.fees.maker}
               </span>
             </span>
             <span className="font-mono" style={{ color: "#C8BCA8" }}>
               {feeRaw > 0
-                ? `$${feeRaw.toLocaleString("en-US", {
-                    minimumFractionDigits: 4,
-                    maximumFractionDigits: 4,
-                  })}`
+                ? `$${feeRaw.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`
                 : "—"}
             </span>
           </div>
@@ -256,19 +292,33 @@ export default function TradePanel({ market }: Props) {
             <span style={{ color: "#8C8278" }}>Total Cost</span>
             <span className="font-mono font-semibold" style={{ color: "#F0EBE0" }}>
               {marginRaw > 0
-                ? `$${(marginRaw + feeRaw).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}`
+                ? `$${(marginRaw + feeRaw).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                 : "—"}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Submit button */}
-      <div className="p-3 shrink-0" style={{ borderTop: "1px solid #2A2A2A" }}>
+      {/* Submit */}
+      <div className="p-3 shrink-0 flex flex-col gap-2" style={{ borderTop: "1px solid #2A2A2A" }}>
+        {flash === "success" && (
+          <div
+            className="text-xs text-center py-1 rounded font-medium"
+            style={{ background: "rgba(0,200,83,0.12)", color: "#00C853" }}
+          >
+            Position opened!
+          </div>
+        )}
+        {flash === "error" && (
+          <div
+            className="text-xs text-center py-1 rounded font-medium"
+            style={{ background: "rgba(255,68,102,0.12)", color: "#FF4466" }}
+          >
+            Enter a valid size
+          </div>
+        )}
         <button
+          onClick={handleSubmit}
           className="w-full py-2.5 rounded font-semibold text-sm transition-all hover:brightness-110 active:scale-[0.98]"
           style={{
             background: isLong
